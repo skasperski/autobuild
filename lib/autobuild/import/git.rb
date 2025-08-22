@@ -179,8 +179,18 @@ module Autobuild
                 with_submodules: false,
                 fingerprint_mode: Git.default_fingerprint_mode,
                 single_branch: Git.single_branch?,
-                shallow: Git.shallow?
+                shallow: nil
             )
+            if gitopts[:shallow].nil? && Git.shallow?
+                # Support for shallow clones is limited ... do not auto-set it
+                # if we are in conditions where it will generate an error later
+                gitopts[:shallow] =
+                    if gitopts[:tag]
+                        gitopts[:single_branch]
+                    else
+                        !gitopts[:commit]
+                    end
+            end
 
             if gitopts[:branch] && branch
                 raise ConfigException, "git branch specified with both the option hash "\
@@ -1303,8 +1313,11 @@ module Autobuild
                 return false
             end
             if tag && !single_branch?
-                Autoproj.warn "#{package.name}: "\
-                              "Cannot pin a tag while doing a shallow clone"
+                Autoproj.warn(
+                    "#{package.name}: "\
+                    "Cannot pin a tag while doing a shallow clone " \
+                    "if single_branch is not set"
+                )
                 return false
             end
             if @remote_branch
