@@ -5,12 +5,14 @@ module Autobuild
 
             parent_name = options[:parent]
             unless parent_name
-              raise "Subpackage must provide a parent package."
+              raise PackageException,
+                "Subpackage must provide a parent package."
             end
 
             @parent = Autoproj.workspace.manifest.package_definition_by_name(parent_name)
             unless @parent
-              raise "Parent package #{parent_name} does not exist."
+              raise PackageException,
+                "Parent package #{parent_name} does not exist."
             end
 
             super(options.merge(repository_id: source))
