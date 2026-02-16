@@ -13,19 +13,15 @@ module Autobuild
               raise "Parent package #{parent_name} does not exist."
             end
 
-            unless @parent.autobuild.importer
-              raise "Parent package #{parent_name} has no importer."
-            end
-
             super(options.merge(repository_id: source))
         end
 
         def update(_package, options = Hash.new) # :nodoc:
-            @parent.autobuild.importer.update(@parent.autobuild, options)
+            false 
         end
 
-        def checkout(_package, options = Hash.new) # :nodoc:
-            @parent.autobuild.importer.checkout(@parent.autobuild, options)
+        def checkout(package, options = Hash.new) # :nodoc:
+            package.depends_on(@parent.autobuild)
         end
     end
 
