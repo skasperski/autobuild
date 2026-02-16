@@ -2,11 +2,20 @@ module Autobuild
     class Subpackage < Importer
         def initialize(source, options = {})
             @source = source
+
             parent_name = options[:parent]
-            raise "Subpackage must provide a parent package." unless parent_name
+            unless parent_name
+              raise "Subpackage must provide a parent package."
+            end
+
             @parent = Autoproj.workspace.manifest.package_definition_by_name(parent_name)
-            raise "Parent package #{parent_name} does not exist." unless @parent
-            raise "Parent package #{parent_name} has no importer." unless @parent.autobuild.importer
+            unless @parent
+              raise "Parent package #{parent_name} does not exist."
+            end
+
+            unless @parent.autobuild.importer
+              raise "Parent package #{parent_name} has no importer."
+            end
 
             super(options.merge(repository_id: source))
         end
