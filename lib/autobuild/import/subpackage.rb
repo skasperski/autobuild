@@ -21,7 +21,7 @@ module Autobuild
         end
 
         def update(_package, options = Hash.new) # :nodoc:
-            @parent.autobuild.importer.update(@parent, options)
+            @parent.autobuild.importer.update(@parent.autobuild, options)
         end
 
         def checkout(_package, options = Hash.new) # :nodoc:
