@@ -16,12 +16,16 @@ module Autobuild
             super(options.merge(repository_id: source))
         end
 
-        def update(_package, options = Hash.new) # :nodoc:
+        def update(_package, options = Hash.new) # Does nothing, parent will do update
             false 
         end
 
-        def checkout(package, options = Hash.new) # :nodoc:
+        def checkout(package, options = Hash.new) # Does nothing, parent will be checked out
             package.depends_on(@parent.autobuild)
+        end
+        
+        def snapshot(*) # Does nothing, parent will do snapshot
+            true
         end
     end
 
