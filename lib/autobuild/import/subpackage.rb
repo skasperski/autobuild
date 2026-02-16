@@ -16,15 +16,18 @@ module Autobuild
             super(options.merge(repository_id: source))
         end
 
-        def update(_package, options = Hash.new) # Does nothing, parent will do update
+        # Does nothing, parent will do update
+        def update(_package, options = Hash.new)
             false 
         end
 
-        def checkout(package, options = Hash.new) # Does nothing, parent will be checked out
+        # Does nothing, parent will be checked out
+        def checkout(package, options = Hash.new)
             package.depends_on(@parent.autobuild)
         end
-        
-        def snapshot(*) # Does nothing, parent will do snapshot
+
+        # Does nothing, parent will do snapshot
+        def snapshot(*)
             true
         end
     end
@@ -33,3 +36,4 @@ module Autobuild
         Subpackage.new(source, options)
     end
 end
+
