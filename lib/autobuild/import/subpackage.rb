@@ -3,27 +3,20 @@ module Autobuild
         def initialize(source, options = {})
             @source = source
             parent_name = options[:parent]
-            if !parent_name
-              raise "Subpackage must provide a parent package."
-            end
-
+            raise "Subpackage must provide a parent package." unless parent_name
             @parent = Autoproj.workspace.manifest.package_definition_by_name(parent_name)
-            if !@parent
-              raise "Parent package #{parent_name} does not exist."
-            end
+            raise "Parent package #{parent_name} does not exist." unless @parent
+            raise "Parent package #{parent_name} has no importer." unless @parent.autobuild.importer
 
-            if !@parent.autobuild.importer
-              raise "Parent package #{parent_name} has no importer."
-            end
             super(options.merge(repository_id: source))
         end
 
-        def update(package, options = Hash.new) # :nodoc:
-            @parent.autobuild.importer.update(@parent)
+        def update(_package, options = Hash.new) # :nodoc:
+            @parent.autobuild.importer.update(@parent, options)
         end
 
-        def checkout(package, _options = Hash.new) # :nodoc:
-            @parent.autobuild.importer.checkout(@parent.autobuild)
+        def checkout(_package, options = Hash.new) # :nodoc:
+            @parent.autobuild.importer.checkout(@parent.autobuild, options)
         end
     end
 
